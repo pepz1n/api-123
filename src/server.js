@@ -4,10 +4,12 @@ import fs from 'fs';
 import path from 'path';
 import morgan from 'morgan';
 import cors from 'cors'
-
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import './models/index.js';
+
 import Routes from './routes/index.js';
+import { sequelize } from './config/postgres.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -35,6 +37,11 @@ Routes(app);
 app.use((req, res) => {
   res.status(404).send('404 - página não encontrada');
 })
+
+sequelize.authenticate()
+  .then(() => {
+    console.log('deu boa');
+  });
 
 app.listen(process.env.API_PORT, (e) => {
   if (e) {
